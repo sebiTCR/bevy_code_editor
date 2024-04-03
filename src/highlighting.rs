@@ -65,7 +65,6 @@ impl Token {
         token
     }
 
-    #[cfg(feature = "egui")]
     /// Syntax highlighting
     pub fn highlight(&mut self, editor: &CodeEditor, text: &str) -> LayoutJob {
         *self = Token::default();
@@ -229,27 +228,21 @@ impl Token {
     }
 }
 
-#[cfg(feature = "egui")]
 use super::CodeEditor;
-#[cfg(feature = "egui")]
-use egui::text::LayoutJob;
+use bevy_egui::egui::text::LayoutJob;
 
-#[cfg(feature = "egui")]
-impl egui::util::cache::ComputerMut<(&CodeEditor, &str), LayoutJob> for Token {
+impl bevy_egui::egui::util::cache::ComputerMut<(&CodeEditor, &str), LayoutJob> for Token {
     fn compute(&mut self, (cache, text): (&CodeEditor, &str)) -> LayoutJob {
         self.highlight(cache, text)
     }
 }
 
-#[cfg(feature = "egui")]
-pub type HighlightCache = egui::util::cache::FrameCache<LayoutJob, Token>;
+pub type HighlightCache = bevy_egui::egui::util::cache::FrameCache<LayoutJob, Token>;
 
-#[cfg(feature = "egui")]
-pub fn highlight(ctx: &egui::Context, cache: &CodeEditor, text: &str) -> LayoutJob {
+pub fn highlight(ctx: &bevy_egui::egui::Context, cache: &CodeEditor, text: &str) -> LayoutJob {
     ctx.memory_mut(|mem| mem.caches.cache::<HighlightCache>().get((cache, text)))
 }
 
-#[cfg(feature = "egui")]
 impl CodeEditor {
     fn append(&self, job: &mut LayoutJob, token: &Token) {
         job.append(token.buffer(), 0.0, self.format(token.ty()));

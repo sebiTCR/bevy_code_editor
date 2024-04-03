@@ -5,10 +5,8 @@ pub mod gruvbox;
 pub mod sonokai;
 
 use super::syntax::TokenType;
-#[cfg(feature = "egui")]
-use egui::Color32;
+use bevy_egui::egui::Color32;
 
-#[cfg(feature = "egui")]
 pub const ERROR_COLOR: Color32 = Color32::from_rgb(255, 0, 255);
 
 /// Array of default themes.
@@ -23,7 +21,6 @@ pub const DEFAULT_THEMES: [ColorTheme; 8] = [
     ColorTheme::SONOKAI,
 ];
 
-#[cfg(feature = "egui")]
 fn color_from_hex(hex: &str) -> Option<Color32> {
     if hex == "none" {
         return Some(Color32::from_rgba_premultiplied(255, 0, 255, 0));
@@ -68,30 +65,26 @@ impl ColorTheme {
         self.dark
     }
 
-    #[cfg(feature = "egui")]
     pub fn bg(&self) -> Color32 {
         color_from_hex(self.bg).unwrap_or(ERROR_COLOR)
     }
 
-    #[cfg(feature = "egui")]
     pub fn cursor(&self) -> Color32 {
         color_from_hex(self.cursor).unwrap_or(ERROR_COLOR)
     }
 
-    #[cfg(feature = "egui")]
     pub fn selection(&self) -> Color32 {
         color_from_hex(self.selection).unwrap_or(ERROR_COLOR)
     }
 
-    #[cfg(feature = "egui")]
-    pub fn modify_style(&self, ui: &mut egui::Ui, fontsize: f32) {
+    pub fn modify_style(&self, ui: &mut bevy_egui::egui::Ui, fontsize: f32) {
         let style = ui.style_mut();
         style.visuals.widgets.noninteractive.bg_fill = self.bg();
         style.visuals.window_fill = self.bg();
         style.visuals.selection.stroke.color = self.cursor();
         style.visuals.selection.bg_fill = self.selection();
         style.visuals.extreme_bg_color = self.bg();
-        style.override_font_id = Some(egui::FontId::monospace(fontsize));
+        style.override_font_id = Some(bevy_egui::egui::FontId::monospace(fontsize));
         style.visuals.text_cursor.width = fontsize * 0.1;
     }
 
@@ -111,7 +104,6 @@ impl ColorTheme {
         }
     }
 
-    #[cfg(feature = "egui")]
     pub fn type_color(&self, ty: TokenType) -> Color32 {
         match ty {
             TokenType::Comment(_) => color_from_hex(self.comments),
